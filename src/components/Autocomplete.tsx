@@ -7,7 +7,7 @@ interface Props {
   onSelected: (person: Person) => void;
 }
 
-export const Autocomplate: React.FC<Props> = ({ people, onSelected }) => {
+export const Autocomplete: React.FC<Props> = ({ people, onSelected }) => {
   return (
     <div className="dropdown-menu" role="menu" data-cy="suggestions-list">
       <div className="dropdown-content">

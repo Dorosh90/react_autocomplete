@@ -3,7 +3,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { peopleFromServer } from './data/people';
 import './App.scss';
 import { Person } from './types/Person';
-import { Autocomplate } from './components/Autocomplate';
+import { Autocomplete } from './components/Autocomplete';
 import debounce from 'lodash.debounce';
 import classNames from 'classnames';
 
@@ -16,7 +16,7 @@ export const App: React.FC<Props> = ({ delay = 300 }) => {
   const [appliedQuery, setAppliedQuery] = useState('');
   const [suggestion, setSuggestion] = useState<Person[]>([]);
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
-  const [isListOpen, setIsListOpen] = useState(false);
+  const [isListOpen, setIsListOpen] = useState(true);
 
   const applyQuery = useMemo(() => debounce(setAppliedQuery, delay), [delay]);
 
@@ -79,10 +79,10 @@ export const App: React.FC<Props> = ({ delay = 300 }) => {
             />
           </div>
 
-          <Autocomplate people={suggestion} onSelected={onSelected} />
+          <Autocomplete people={suggestion} onSelected={onSelected} />
         </div>
 
-        {suggestion.length === 0 && (
+        {suggestion.length === 0 && !selectedPerson && (
           <div
             className="notification
               is-danger
