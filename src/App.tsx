@@ -21,9 +21,13 @@ export const App: React.FC<Props> = ({ delay = 300 }) => {
   const applyQuery = useMemo(() => debounce(setAppliedQuery, delay), [delay]);
 
   const filteredPeople = useMemo(() => {
-    return peopleFromServer.filter(person =>
-      person.name.toLowerCase().includes(appliedQuery.toLowerCase()),
-    );
+    if (appliedQuery === '') {
+      return peopleFromServer;
+    } else {
+      return peopleFromServer.filter(person =>
+        person.name.toLowerCase().includes(appliedQuery.toLowerCase()),
+      );
+    }
   }, [appliedQuery]);
 
   useEffect(() => {
@@ -36,14 +40,16 @@ export const App: React.FC<Props> = ({ delay = 300 }) => {
     setInputValue(value);
     setSelectedPerson(null);
     if (suggestion.length > 1) {
-      setIsListOpen(true);
+      setIsListOpen(false);
     }
 
     if (value.trim() !== '') {
       applyQuery(value.trim());
     } else {
-      setSuggestion([]);
+      setSuggestion(peopleFromServer);
     }
+
+    setIsListOpen(true);
   };
 
   const onSelected = (person: Person) => {
@@ -51,6 +57,14 @@ export const App: React.FC<Props> = ({ delay = 300 }) => {
     setSelectedPerson(person);
     setSuggestion([]);
     setIsListOpen(false);
+  };
+
+  const handleFocus = () => {
+    if (inputValue.trim() === '') {
+      setSuggestion(peopleFromServer); // Показываем всех при фокусе, если поле пустое
+    }
+
+    setIsListOpen(true); // Открываем список
   };
 
   return (
@@ -75,7 +89,7 @@ export const App: React.FC<Props> = ({ delay = 300 }) => {
               className="input"
               data-cy="search-input"
               onChange={handleChangeQuery}
-              onFocus={() => setIsListOpen(true)}
+              onFocus={handleFocus}
             />
           </div>
 
